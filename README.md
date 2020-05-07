@@ -175,3 +175,52 @@ def home(request):
     # from views -> is routing to a tempĺate
     return render(request, 'blog/home.html')
 ```
+
+- create a dummy date in the file views
+```
+posts = [
+    {
+        'author': 'CoreyMS',
+        "title": 'Blog Post 1',
+        'content': 'First post content',
+        'date_posted': 'May 06, 2020'
+    },
+    {
+        'author': 'Jane Doe',
+        "title": 'Blog Post 2',
+        'content': 'Second post content',
+        'date_posted': 'May 07, 2020'
+    }
+]
+```
+
+- modify the function home:
+```
+    # context to receive de posts (dummy data) 
+    context = {
+        'posts': posts
+    }
+    # from views -> is routing to a tempĺate, with contecxt information
+    return render(request, 'blog/home.html', context)
+```
+
+- modify the templates ->  home.html
+```
+<body>
+    {% for post in posts %}
+        <h1>{{ post.title }}</h1>
+            <p>By {{ post.author }} on {{ post.date_posted }}</p>
+            <p>{{ post.content }}</p>
+    {% endfor %}
+</body>
+```
+
+- there is a modification in the head tag ->  home.html
+```
+# just to verify the title of the page 
+    {% if title %}
+        <title>Django Blog - {{ title }}</title>
+    {% else %}
+        <title>Django Blog</title>
+    {% endif %}
+```

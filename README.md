@@ -37,7 +37,8 @@ requirements:
 - (django_project) django_project $ python -m django --version
 > 3.0.6
 
-# When we use (.) to creat a django project - the project is going to be create in the same directory
+<h5> When we use (.) to creat a django project - the project is going to be create in the same directory</h5>
+
 - (django_project) django_project $ django-admin startproject djangoproject .
 ```
 (django_project) django_project $ tree
@@ -103,7 +104,7 @@ def about(request):
     return HttpResponse('<h1>Blog About</h1>')
 ```
 
-# Create a file blog/urls.py and copy from djangoproject/urls.py
+<h5>Create a file blog/urls.py and copy from djangoproject/urls.py</h5>
 ```
 from django.urls import path
 from . import views
@@ -114,7 +115,7 @@ urlpatterns = [
 ]
 ```
 
-# insert in the file djangoproject/urls.py
+<h5>insert in the file djangoproject/urls.py</h5>
 ```
 from django.urls import path, include  <- we inserted include
 urlpatterns = [
@@ -122,4 +123,55 @@ urlpatterns = [
     # when we leave the path ('', ...) then we can access it directly
     path('', include('blog.urls')), <- we insert this line
 ]
+```
+
+<h5>Create a blog/templates/blog</h5>
+
+- blog $ mkdir templates/
+- blog $ mkdir templates/blog <- is is django convention
+  > ex: blog -> templates -> blog -> template.html
+
+<h5>Create inside of blog/templates/blog two files:</h5>
+- created via pycharm -> home.html
+- created via pycharm -> about.html
+```
+templates $ tree
+.
+└── blog
+    ├── about.html
+    └── home.html
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>Bloag Home!</h1>
+</body>
+</html>
+```
+
+- in the file apps.py -> verify the class BlogConfig
+```
+class BlogConfig(AppConfig):
+    name = 'blog'
+```
+
+- in the setting.py file insert in the INSTALLED_APPS
+````
+INSTALLED_APPS = [
+    'blog.apps.BlogConfig',
+    ...
+]
+````
+- in the views.py file we need to modify
+```
+def home(request):
+    # from views -> is routing a response to user
+    # return HttpResponse('<h1>Blog Home</h1>')
+
+    # from views -> is routing to a tempĺate
+    return render(request, 'blog/home.html')
 ```

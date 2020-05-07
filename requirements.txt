@@ -1,0 +1,9 @@
+asgiref==3.2.7
+Django==3.0.6
+entrypoints==0.3
+flake8==3.7.9
+mccabe==0.6.1
+pycodestyle==2.5.0
+pyflakes==2.1.1
+pytz==2020.1
+sqlparse==0.3.1

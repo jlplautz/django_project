@@ -333,4 +333,112 @@ This password is too common.
 Bypass password validation and create user anyway? [y/N]: y
 Superuser created successfully.
 ```
+<h5>Database connection - SQlite</h5>
 
+- file blog/models.py
+
+```
+from django.db import models
+from django.utils import timezone
+from django.contrib.auth.models import User
+
+class Post(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    date_posed = models.DateTimeField(default=timezone.now)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+```
+
+- by command -> mng sqlmigarte blog 0001 -> we can see the SQL command:
+```
+(django_project) django_project $ mng sqlmigrate blog 0001
+BEGIN;
+--
+-- Create model Post
+--
+CREATE TABLE "blog_post" ("id" integer NOT NULL PRIMARY KEY AUTOINCREMENT, 
+                          "title" varchar(100) NOT NULL, 
+                          "content" text NOT NULL, 
+                          "date_posed" datetime NOT NULL, 
+                          "author_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED);
+CREATE INDEX "blog_post_author_id_dd7a8485" ON "blog_post" ("author_id");
+COMMIT;
+```
+- command mng migrate
+```
+(django_project) django_project $ mng migrate
+Operations to perform:
+  Apply all migrations: admin, auth, blog, contenttypes, sessions
+Running migrations:
+  Applying blog.0001_initial... OK
+```
+
+<h5>Using command via terminal => mng shell</h5>
+
+- (django_project) django_project $ mng shell
+    - from blog.models import Post 
+    - from django.contrib.auth.models import User
+    - User.objects.all()
+        - <QuerySet [<User: admin>]>
+    - User.objects.first()
+        - <User: admin>
+    - User.objects.filter(username='admin')
+        - <QuerySet [<User: admin>]>
+    - user = User.objects.filter(username='admin').first()
+    - user
+        - <User: admin>
+    - user.id
+        - 1
+    - user.pk
+        - 1
+    - user = User.objects.get(id=1)
+    - user
+        - <User: admin>
+    - Post.objects.all()
+        - <QuerySet []>
+    - post_1 = Post(title='Blog 1', content='First post Content!', author=user)
+    - post_1.save()
+    - Post.objects.all()
+        - <QuerySet [<Post: Post object (1)>]>
+    - a function was implemented in the blog/models.py def __str__(self)
+    
+    - Post.objects.all()
+        - <QuerySet [<Post: Blog 1>]>
+ 
+    - post_2 = Post(title='Blog 2', content='Second Post Content!', author_id=user.id)
+    - post_2.save()
+    - Post.objects.all()
+        - <QuerySet [<Post: Blog 1>, <Post: Blog 2>]>
+    - post = Post.objects.first()
+    - post.id
+        -1
+    - post.content
+        -'First post Content!'
+    - post.date_error_message(  post.date_posed           
+    - post.date_posed
+        - datetime.datetime(2020, 5, 8, 21, 7, 11, 180104, tzinfo=<UTC>)
+    - post.author
+        - <User: admin>
+    - post.author.email
+        - 'jorge.plautz@gmail.com'
+    - user.post_set
+        - <django.db.models.fields.related_descriptors.create_reverse_many_to_one_manager.<locals>.RelatedManager object at 0x7f88a6dab520>
+    - user.post_set.all()
+        - <QuerySet [<Post: Blog 1>, <Post: Blog 2>]>
+    
+    - user.post_set.create(title='Blog 3', content='Third Post Content!')
+        - <Post: Blog 3>
+    - ( observe that we don't need to save() the last create blog))
+    - Post.objects.all()
+        - <QuerySet [<Post: Blog 1>, <Post: Blog 2>, <Post: Blog 3>]>
+
+<h5>Delete de dummy data from blog/views.py</h5>
+
+- in the function home, we need to modify the request information to the context
+    - context = {'posts': Post.objects.all()}
+    
+- Procedure to modify the date apresentation in the template
+    - <small class="text-muted">{{ post.date_posed }}</small>
+    - <small class="text-muted">{{ post.date_posed | date:"F d, Y" }}</small>
+    
+<h5>To access the new tdatabase table from django-admin</h5>

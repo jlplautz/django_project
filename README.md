@@ -94,7 +94,8 @@ requirements:
 └── requirements.txt
 ```
 
-# in the file blog/views.py
+<h4> Insert into blog/views.py</h4>
+
 ```
 from django.http import HttpResponse
 def home(request):
@@ -115,7 +116,7 @@ urlpatterns = [
 ]
 ```
 
-<h5>insert in the file djangoproject/urls.py</h5>
+<h5>Insert in the file djangoproject/urls.py</h5>
 ```
 from django.urls import path, include  <- we inserted include
 urlpatterns = [
@@ -226,6 +227,7 @@ posts = [
 ```
 
 <h5> TEMPLATE INHERITANCE </h5>
+
 - create a new templates/blog/base.html
 ```
 <!DOCTYPE html>
@@ -272,15 +274,63 @@ posts = [
 - the code was copied from github
 https://github.com/CoreyMSchafer/code_snippets/tree/master/Django_Blog/03-Templates/django_project/blog 
 
-<h5> directory static/blog was creaed and a file main.ccs</h5>
+<h5>Directory static/blog was creaed and a file main.ccs</h5>
+
 - file main.css was copied from -> ttps://github.com/CoreyMSchafer/code_snippets/...
 
-<h5> Two additional lines was implemented in the file base.html</h5>
+<h5>Two additional lines was implemented in the file base.html</h5>
+
 - {% load static %}
 - head tag -> <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
 
-<h5> Important information to insert into the navbar</h5>
+<h5>Important information to insert into the navbar</h5>
+
 - we can insert the url path by the url name.
   - <a class="nav-item nav-link" href="/">Home</a> <- old 
-  - <a class="nav-item nav-link" href="{% url 'blog-home' %}">Home</a> <- name 'blog-home' <- defined in urls;py file
+  - <a class="nav-item nav-link" href="{% url 'blog-home' %}">Home</a> <- name 'blog-home' <- defined in urls.py file
   - <a class="nav-item nav-link" href="{% url 'blog-about' %}">About</a> <- name 'blog-about'
+  
+<h5>django-admin page</h5>
+
+- (django_project) django_project $ mng makemigration
+- (django_project) django_project $ mng migrate
+- (django_project) django_project $ mng createsuperuser
+
+```
+(django_project) django_project $ mng makemigrations
+No changes detected
+
+(django_project) django_project $ mng migrate
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying admin.0003_logentry_add_action_flag_choices... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying auth.0009_alter_user_last_name_max_length... OK
+  Applying auth.0010_alter_group_name_max_length... OK
+  Applying auth.0011_update_proxy_permissions... OK
+  Applying sessions.0001_initial... OK
+
+(django_project) django_project $ mng createsuperuser
+Username (leave blank to use 'plautz'): admin
+Email address: admin@admin.com
+Password: 
+Password (again): 
+The password is too similar to the username.
+This password is too short. It must contain at least 8 characters.
+This password is too common.
+Bypass password validation and create user anyway? [y/N]: y
+Superuser created successfully.
+```
+

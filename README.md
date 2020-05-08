@@ -225,7 +225,8 @@ posts = [
     {% endif %}
 ```
 
-- template inheritance -> create a new templates/blog/base.html
+<h5> TEMPLATE INHERITANCE </h5>
+- create a new templates/blog/base.html
 ```
 <!DOCTYPE html>
 <html lang="en">
@@ -252,7 +253,6 @@ posts = [
     {% endfor %}
 {% endblock content %}
 ```
-
 - template inheritance -> modify templates/blog/about.html
 ```
 {% extends "blog/base.html" %}
@@ -260,3 +260,27 @@ posts = [
     <h1>About Page!</h1>
 {% endblock content %}
 ```
+
+<h5> BOOTSTRAP - Popular library</h5>
+
+- https://getbootstrap.com/ -> Starter template
+- copied from bootstrap - starter temnplate
+- base.html
+    - we copy links to insert in the head tag 
+    - and script to insert into the body tag
+    - insert div tag ...
+- the code was copied from github
+https://github.com/CoreyMSchafer/code_snippets/tree/master/Django_Blog/03-Templates/django_project/blog 
+
+<h5> directory static/blog was creaed and a file main.ccs</h5>
+- file main.css was copied from -> ttps://github.com/CoreyMSchafer/code_snippets/...
+
+<h5> Two additional lines was implemented in the file base.html</h5>
+- {% load static %}
+- head tag -> <link rel="stylesheet" type="text/css" href="{% static 'blog/main.css' %}">
+
+<h5> Important information to insert into the navbar</h5>
+- we can insert the url path by the url name.
+  - <a class="nav-item nav-link" href="/">Home</a> <- old 
+  - <a class="nav-item nav-link" href="{% url 'blog-home' %}">Home</a> <- name 'blog-home' <- defined in urls;py file
+  - <a class="nav-item nav-link" href="{% url 'blog-about' %}">About</a> <- name 'blog-about'

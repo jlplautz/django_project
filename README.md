@@ -224,3 +224,39 @@ posts = [
         <title>Django Blog</title>
     {% endif %}
 ```
+
+- template inheritance -> create a new templates/blog/base.html
+```
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% if title %}
+        <title>Django Blog - {{ title }}</title>
+    {% else %}
+        <title>Django Blog</title>
+    {% endif %}
+</head>
+<body>
+    {% block content %}{% endblock %}
+</body>
+</html>
+```
+- template inheritance -> modify templates/blog/home.html
+```
+{% extends "blog/base.html" %}
+{% block content %}
+    {% for post in posts %}
+        <h1>{{ post.title }}</h1>
+        <p>By {{ post.author }} on {{ post.date_posted }}</p>
+        <p></p>{{ post.content }}</p>
+    {% endfor %}
+{% endblock content %}
+```
+
+- template inheritance -> modify templates/blog/about.html
+```
+{% extends "blog/base.html" %}
+{% block content %}
+    <h1>About Page!</h1>
+{% endblock content %}
+```

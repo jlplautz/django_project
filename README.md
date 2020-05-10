@@ -441,4 +441,157 @@ Running migrations:
     - <small class="text-muted">{{ post.date_posed }}</small>
     - <small class="text-muted">{{ post.date_posed | date:"F d, Y" }}</small>
     
-<h5>To access the new tdatabase table from django-admin</h5>
+<h5>To access the new database table from django-admin</h5>
+- insert into file blog/admin.py 
+```
+from django.contrib import admin
+from .models import Post
+
+admin.site.register(Post)
+```
+
+<h5>Create a user registration page- to loging account</h5>
+- create a new app inside of the project
+    - (django_project) django_project $ mng startapp users
+```
+(django_project) django_project $ tree -d
+.
+├── blog
+│   ├── migrations
+│   │   └── __pycache__
+│   ├── __pycache__
+│   ├── static
+│   │   └── blog
+│   └── templates
+│       └── blog
+├── djangoproject
+│   └── __pycache__
+└── users
+    └── migrations
+```
+
+- setting.py file insert -> INSTALLED_APPS
+    - 'users.apps.UsersConfig',
+
+- Configure the views.py file in the users app
+```
+from django.shortcuts import render
+from django.contrib.auth.forms import UserCreationForm
+
+def register(request):
+    form = UserCreationForm()
+    return render(request, 'users/register.html', {'form': form})
+```
+
+- create in the users app a templates/users/register.html
+```
+{% extends "blog/base.html" %}
+{% block content %}
+    <div class="content-section">
+{#      CSRF - cross-site request forgery token and this will protect our form against certain attacks#}
+{#             just some added security that Django requires#}
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Join Today</legend>
+                {{ form }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Sign Up</button>
+            </div>
+        </form>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Already have an account? <a class="ml-2" href="#">Sing In</a>
+            </small>
+
+        </div>
+    </div>
+{% endblock content %}
+```
+
+- need to create a URL pattern - in setting.py file
+- we can use the view directly by importing it from users
+```
+from users import views as user_views
+urlpatterns = [
+    ...
+    path('register/', user_views.register, name='register'),
+]
+```
+
+- To save the information collected in the template register.html
+    - modify the users/views.py
+```
+from django.shortcuts import render, redirect
+
+    if request.method == 'POST':
+        form = UserCreationForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}!')
+            return redirect('blog-home')
+    else:
+        form = UserCreationForm()
+    return render(request, 'users/register.html', {'form': form})
+```
+
+- the page is going to be redirect to blog-home, the we need to prepare it to shoe the alarm
+```
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+{% block content %}{% endblock %}
+```
+
+- to save the new created user in the users/views.py
+    - form.save()
+    
+- create a new form - it is going to be a new file users/forms.py
+```
+from django import forms
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
+class UserRegisterForm(UserCreationForm):
+    email = forms.EmailField
+
+    class meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+```
+
+- modify the users/views.py file
+```python
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .forms import UserRegisterForm
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Account created for {username}!')
+            return redirect('blog-home')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'users/register.html', {'form': form})
+```
+
+- Just to get a better template/users/register apresentation by crispy forms
+    - (django_project) django_project $ pipenv install django-crispy-forms
+
+
+- in the setting.py file inserted it into INSTALLED_APPS
+    - 'crispy_forms',
+    - CRISPY_TEMPLATE_PACK = 'bootstrap4' <- insert it in the end of setting.py file
+
+- in the file register.html insert
+    - {% load crispy_forms_tags %}
+    - {{ form|crispy }}

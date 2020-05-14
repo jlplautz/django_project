@@ -480,6 +480,7 @@ admin.site.register(Post)
     - 'users.apps.UsersConfig',
 
 - Configure the views.py file in the users app
+
 ```
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
@@ -497,7 +498,7 @@ def register(request):
 {#      CSRF - cross-site request forgery token and this will protect our form against certain attacks#}
 {#             just some added security that Django requires#}
         <form method="POST">
-            {% csrf_token %}
+            {% csrf_token %}  
             <fieldset class="form-group">
                 <legend class="border-bottom mb-4">Join Today</legend>
                 {{ form }}
@@ -510,16 +511,16 @@ def register(request):
             <small class="text-muted">
                 Already have an account? <a class="ml-2" href="#">Sing In</a>
             </small>
-
         </div>
     </div>
 {% endblock content %}
 ```
 
-- need to create a URL pattern - in setting.py file
+- need to create a URL pattern - in urls.py file
 - we can use the view directly by importing it from users
 ```
 from users import views as user_views
+
 urlpatterns = [
     ...
     path('register/', user_views.register, name='register'),
@@ -528,6 +529,7 @@ urlpatterns = [
 
 - To save the information collected in the template register.html
     - modify the users/views.py
+
 ```
 from django.shortcuts import render, redirect
 
@@ -542,7 +544,9 @@ from django.shortcuts import render, redirect
     return render(request, 'users/register.html', {'form': form})
 ```
 
-- the page is going to be redirect to blog-home, the we need to prepare it to shoe the alarm
+- the page is going to be redirect to blog-home, 
+  the we need to prepare the base.html templates to show the alarm
+  We are going to shoe the message in the main container
 ```
 {% if messages %}
     {% for message in messages %}
@@ -558,6 +562,8 @@ from django.shortcuts import render, redirect
     - form.save()
     
 - create a new form - it is going to be a new file users/forms.py
+  And it is going to create our first form that inherits from the user creation form.
+  
 ```
 from django import forms
 from django.contrib.auth.models import User
@@ -572,7 +578,7 @@ class UserRegisterForm(UserCreationForm):
 ```
 
 - modify the users/views.py file
-```python
+```
 from django.shortcuts import render, redirect
 from django.contrib import messages
 from .forms import UserRegisterForm
@@ -593,7 +599,6 @@ def register(request):
 - Just to get a better template/users/register apresentation by crispy forms
     - (django_project) django_project $ pipenv install django-crispy-forms
 
-
 - in the setting.py file inserted it into INSTALLED_APPS
     - 'crispy_forms',
     - CRISPY_TEMPLATE_PACK = 'bootstrap4' <- insert it in the end of setting.py file
@@ -601,5 +606,9 @@ def register(request):
 - in the file register.html insert
     - {% load crispy_forms_tags %}
     - {{ form|crispy }}
+
+
+h2> Web App Part 6 -   </h2> 
+<h3> .... </h3 >
     
     

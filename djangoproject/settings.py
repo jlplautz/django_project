@@ -126,3 +126,6 @@ STATIC_URL = '/static/'
 # Krispy documentation online
 # use bootstrap4 for oy=ur CCS Template
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+LOGIN_REDIRECT_URL = 'blog-home'
+LOGIN_URL = 'login'

@@ -743,7 +743,9 @@ def profile(request):
 
 - create a variable in the setting.py
     - LOGIN_URL = 'login'
-    
+
+
+
 <h2> Web App Part 8 -   </h2> 
 <h3> </h3 >
  

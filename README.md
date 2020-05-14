@@ -459,6 +459,7 @@ admin.site.register(Post)
 
 - create a new app inside of the project
     - (django_project) django_project $ mng startapp users
+    
 ```
 (django_project) django_project $ tree -d
 .
@@ -481,7 +482,7 @@ admin.site.register(Post)
 
 - Configure the views.py file in the users app
 
-```
+```textmate
 from django.shortcuts import render
 from django.contrib.auth.forms import UserCreationForm
 
@@ -491,6 +492,7 @@ def register(request):
 ```
 
 - create in the users app a templates/users/register.html
+
 ```
 {% extends "blog/base.html" %}
 {% block content %}
@@ -606,7 +608,6 @@ def register(request):
 - in the file register.html insert
     - {% load crispy_forms_tags %}
     - {{ form|crispy }}
-
 
 h2> Web App Part 6 -   </h2> 
 <h3> .... </h3 >

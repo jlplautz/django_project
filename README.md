@@ -333,7 +333,8 @@ This password is too common.
 Bypass password validation and create user anyway? [y/N]: y
 Superuser created successfully.
 ```
-<h5>Database connection - SQlite</h5>
+
+<h3>Database connection - SQlite</h3>
 
 - file blog/models.py
 
@@ -373,7 +374,7 @@ Running migrations:
   Applying blog.0001_initial... OK
 ```
 
-<h5>Using command via terminal => mng shell</h5>
+<h3>Using command via terminal => mng shell</h3>
 
 - (django_project) django_project $ mng shell
     - from blog.models import Post 
@@ -432,7 +433,9 @@ Running migrations:
     - Post.objects.all()
         - <QuerySet [<Post: Blog 1>, <Post: Blog 2>, <Post: Blog 3>]>
 
-<h5>Delete de dummy data from blog/views.py</h5>
+<h2> Web App Part 5 - Database and Migrations </h2> 
+
+<h3>Delete de dummy data from blog/views.py</h3 >
 
 - in the function home, we need to modify the request information to the context
     - context = {'posts': Post.objects.all()}
@@ -450,7 +453,10 @@ from .models import Post
 admin.site.register(Post)
 ```
 
-<h5>Create a user registration page- to loging account</h5>
+<h2> Web App Part 6 - User Registration </h2>
+<h3>Create a user registration page- to loging account</h3>
+<h3>learning how we can use Form - to create user </h3 >
+
 - create a new app inside of the project
     - (django_project) django_project $ mng startapp users
 ```
@@ -595,3 +601,5 @@ def register(request):
 - in the file register.html insert
     - {% load crispy_forms_tags %}
     - {{ form|crispy }}
+    
+    

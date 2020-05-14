@@ -445,7 +445,8 @@ Running migrations:
     - <small class="text-muted">{{ post.date_posed | date:"F d, Y" }}</small>
     
 <h5>To access the new database table from django-admin</h5>
-- insert into file blog/admin.py 
+- insert into file blog/admin.py
+
 ```
 from django.contrib import admin
 from .models import Post
@@ -473,7 +474,7 @@ admin.site.register(Post)
 │       └── blog
 ├── djangoproject
 │   └── __pycache__
-└── users
+└── usersf
     └── migrations
 ```
 
@@ -609,7 +610,140 @@ def register(request):
     - {% load crispy_forms_tags %}
     - {{ form|crispy }}
 
-h2> Web App Part 6 -   </h2> 
-<h3> .... </h3 >
+<h2> Web App Part 7 -  Login and Logout System </h2> 
+<h3> learning how to create an authentication system for Django App</h3 >
     
+- Project URLs module - urls.py module
+    - these are class-based views
     
+```
+from django.contrib.auth import views as auth_views  # auth_views for django.contrib.auth
+
+urlpatterns = [
+    ...
+    path('login/', auth_views.LoginView.as_views(), name='loging'),
+    path('logout/',auth_views.LogoutView.as_views(),name='logout'),
+    ...
+]
+```
+
+- in the urlpatterns we can tell Django where to look for a template, 
+  as one argument as ViewFunction 
+  
+```
+from django.contrib.auth import views as auth_views  # auth_views for django.contrib.auth
+
+urlpatterns = [
+    ...
+    path('login/', auth_views.LoginView.as_view(template_name='users/login.html'), name='loging'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='users/logout.html'), name='logout'),
+    ...
+]
+```
+
+- created a file users/templates/users/login.html
+```
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+{#      CSRF - cross-site request forgery token and this will protect our form against certain attacks#}
+{#             just some added security that Django requires#}
+        <form method="POST">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Log In</legend>
+{#                to render or form in paragraph tags insert -> for.as_p#}
+                {{ form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Login</button>
+            </div>
+        </form>
+        <div class="border-top pt-3">
+            <small class="text-muted">
+                Need an account? <a class="ml-2" href="{% url 'register' %}">Sing Up Now</a>
+            </small>
+        </div>
+    </div>
+{% endblock content %}
+```
+
+- After the user enter the correct user and password - log success
+  Django need to route the user to one page -> home.html
+    - setting.py -> LOGIN_REDIRECT_URL = 'blog-home'
+    
+
+- Modify the users/views.py - after a successfully registered the user
+  we can redirecting them to the login page.
+```
+    messages.success(request, f'Your account has been created!. You are able to log in')
+    return redirect('login')
+```
+
+- created a file users/templates/users/logout.html
+
+```
+{% extends "blog/base.html" %}
+{% block content %}
+    <h2>You have been logged out</h2>
+    <div class="border-top pt-3">
+        <small class="text-muted">
+            <a href="{% url 'login' %}">Log In Again</a>
+        </small>
+    </div>
+{% endblock content %}
+```
+
+- Create a page for user profile
+    - in the users/views.py
+```
+def profile(request):
+    return render(request, 'users/profile.html')
+```
+
+- created a file users/templates/users/profile.html
+```
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <h1>{{ user.username }}</h1>
+{% endblock content %}
+```
+
+- create the route and our URL patterns that will use this view -> urls.py
+```
+urlpatterns = [ ...
+    path('profile/', user_views.profile, name='profile'),
+```
+
+- Add link to this page on the navegation bar-> urls.py
+
+```
+<!-- Navbar Right Side -->
+<div class="navbar-nav">
+    {% if user.is_authenticated %}
+        <a class="nav-item nav-link" href="{% url 'profile' %}">Profile</a>
+        <a class="nav-item nav-link" href="{% url 'logout' %}">Logout</a>
+    {% else %}
+        <a class="nav-item nav-link" href="{% url 'login' %}">Login</a>
+        <a class="nav-item nav-link" href="{% url 'register' %}">Register</a>
+     {% endif %}
+</div>
+```
+
+- use a django decorator  -> users/views.py
+```
+from django.contrib.auth.decorators import login_required
+
+@login_required
+def profile(request):
+    return render(request, 'users/profile.html')
+```
+
+- create a variable in the setting.py
+    - LOGIN_URL = 'login'
+    
+<h2> Web App Part 8 -   </h2> 
+<h3> </h3 >
+ 

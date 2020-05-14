@@ -745,7 +745,6 @@ def profile(request):
     - LOGIN_URL = 'login'
 
 
-
 <h2> Web App Part 8 -   </h2> 
 <h3> </h3 >
  

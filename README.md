@@ -899,7 +899,133 @@ def profile(request):
 - create a variable in the setting.py
     - LOGIN_URL = 'login'
     
-<h2> Web App Part 8 -   </h2> 
-<h3> </h3 >
+<h2> Web App Part 8 -  User Profile and Picture  </h2> 
+<h3> We are going to implement profile page and upload the profle picture for our users</h3 >
     
-    
+- in the users/models.py 
+
+```
+from django.db import models
+from django.contrib.auth.models import User
+
+class Profile(models.Model):
+    # relationship is going to be onetoone
+    # on_delete=Models.CASCADE => if user is deleted the profile is going to be deleted too.
+    user = models.OneToOneField(User, on_delete=models.CASCADE())
+    image = models.ImageField(default='defaults.jpg', upload_to='profile_pics')
+
+    def __str__(self):
+        return f'{self.user.username} Profile'
+```
+
+- in the terminal execute 
+    - __(django_project) django_project $ mng makemigrations__
+        - ERRORS:
+        - Cannot use ImageField because Pillow is not installed.
+        - HINT:  run command __"python -m pip install Pillow"__.
+
+- (django_project) django_project $ __pipenv install Pillow__
+
+- (django_project) django_project $ mng makemigrations
+```
+Migrations for 'users':
+  users/migrations/0001_initial.py
+    - Create model Profile
+```
+
+- (django_project) django_project $ __mng migrate__
+```
+Operations to perform:
+  Apply all migrations: admin, auth, blog, contenttypes, sessions, users
+Running migrations:
+  Applying users.0001_initial... OK
+
+```
+
+- file users/admin.py -> register the page profile
+```
+from django.contrib import admin
+from .models import Profile
+
+admin.site.register(Profile)
+```
+
+- to access Django shell
+```
+>>> from django.contrib.auth.models import User
+>>> user = User.objects.filter(username='Plautz').first()
+>>> user
+<User: Plautz>
+>>> user.profile
+<Profile: Plautz Profile>
+>>> user.profile.image
+<ImageFieldFile: profile_pics/20170316_151710_yASenSJ.jpg>
+>>> user.profile.image.width
+2576
+==> Location of image
+>>> user.profile.image.url
+'profile_pics/20170316_151710_yASenSJ.jpg'
+>>> user = User.objects.filter(username='Gabriela').first()
+>>> user
+<User: Gabriela>
+>>> user.profile.image
+<ImageFieldFile: defaults.jpg>
+```
+
+- in setting.py file insert
+  - > MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+  - > MEDIA_URL = '/media/'
+
+- in user/templates/users/profile.html
+```
+{% extends "blog/base.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+    <div class="content-section">
+        <div class="media">
+            <img class="rounded-circle account-img" src="{{ user.profile.image.url }}">
+            <div class="media-body">
+                <h2 class="account-heading">{{ user.username }}</h2>
+                <p class="text-secondary">{{ user.email}}</p>
+            </div>
+        </div>
+        <!-- FORM HERE -->
+    </div>
+{% endblock content %}
+```
+
+- in the project urls.py file insert
+```
+from django.conf import settings
+from django.conf.urls.static import static
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, dociment_root=settings.MEDIA_ROOT)
+```
+
+- users pictures => media/profile_pics/
+- defaults pictures => media/ 
+
+- create in users/ a file signals.py
+```
+from django.db.models.signals import post_save
+from django.contrib.auth.models import User     # sender
+from django.dispatch import receiver
+from .models import Profile     # create a profile and function
+
+@receiver(post_save, sender=User)
+def create_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_profile(sender, instance, **kwargs):
+    instance.profile.save()
+```
+
+- in the users/apps.py => __take care because the user must have profile.__
+```
+    def ready(self):
+        import users.signals
+```
+                                                                                  >

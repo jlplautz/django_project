@@ -1,3 +1,12 @@
-# from django.db import models
+from django.db import models
+from django.contrib.auth.models import User
 
-# Create your models here.
+
+class Profile(models.Model):
+    # relationship is going to be OneToOneField
+    # on_delete=Models.CASCADE => if user is deleted the profile is going to be deleted too.
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    image = models.ImageField(default='defaults.jpg', upload_to='profile_pics')
+
+    def __str__(self):
+        return f'{self.user.username} Profile'

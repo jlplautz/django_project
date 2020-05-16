@@ -122,6 +122,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+
 # if you want to change this ti anything else then you can go to the
 # Krispy documentation online
 # use bootstrap4 for oy=ur CCS Template

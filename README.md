@@ -452,163 +452,6 @@ from .models import Post
 
 admin.site.register(Post)
 ```
-
-<h2> Web App Part 6 - User Registration </h2>
-<h3>Create a user registration page- to loging account</h3>
-<h3>learning how we can use Form - to create user </h3 >
-
-- create a new app inside of the project
-    - (django_project) django_project $ mng startapp users
-    
-```
-(django_project) django_project $ tree -d
-.
-├── blog
-│   ├── migrations
-│   │   └── __pycache__
-│   ├── __pycache__
-│   ├── static
-│   │   └── blog
-│   └── templates
-│       └── blog
-├── djangoproject
-│   └── __pycache__
-└── users
-    └── migrations
-```
-
-- setting.py file insert -> INSTALLED_APPS
-    - 'users.apps.UsersConfig',
-
-- Configure the views.py file in the users app
-
-```textmate
-from django.shortcuts import render
-from django.contrib.auth.forms import UserCreationForm
-
-def register(request):
-    form = UserCreationForm()
-    return render(request, 'users/register.html', {'form': form})
-```
-
-- create in the users app a templates/users/register.html
-
-```
-{% extends "blog/base.html" %}
-{% block content %}
-    <div class="content-section">
-{#      CSRF - cross-site request forgery token and this will protect our form against certain attacks#}
-{#             just some added security that Django requires#}
-        <form method="POST">
-            {% csrf_token %}  
-            <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Join Today</legend>
-                {{ form }}
-            </fieldset>
-            <div class="form-group">
-                <button class="btn btn-outline-info" type="submit">Sign Up</button>
-            </div>
-        </form>
-        <div class="border-top pt-3">
-            <small class="text-muted">
-                Already have an account? <a class="ml-2" href="#">Sing In</a>
-            </small>
-        </div>
-    </div>
-{% endblock content %}
-```
-
-- need to create a URL pattern - in urls.py file
-- we can use the view directly by importing it from users
-```
-from users import views as user_views
-
-urlpatterns = [
-    ...
-    path('register/', user_views.register, name='register'),
-]
-```
-
-- To save the information collected in the template register.html
-    - modify the users/views.py
-
-```
-from django.shortcuts import render, redirect
-
-    if request.method == 'POST':
-        form = UserCreationForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}!')
-            return redirect('blog-home')
-    else:
-        form = UserCreationForm()
-    return render(request, 'users/register.html', {'form': form})
-```
-
-- the page is going to be redirect to blog-home, 
-  the we need to prepare the base.html templates to show the alarm
-  We are going to shoe the message in the main container
-```
-{% if messages %}
-    {% for message in messages %}
-        <div class="alert alert-{{ message.tags }}">
-            {{ message }}
-        </div>
-    {% endfor %}
-{% endif %}
-{% block content %}{% endblock %}
-```
-
-- to save the new created user in the users/views.py
-    - form.save()
-    
-- create a new form - it is going to be a new file users/forms.py
-  And it is going to create our first form that inherits from the user creation form.
-  
-```
-from django import forms
-from django.contrib.auth.models import User
-from django.contrib.auth.forms import UserCreationForm
-
-class UserRegisterForm(UserCreationForm):
-    email = forms.EmailField
-
-    class meta:
-        model = User
-        fields = ['username', 'email', 'password1', 'password2']
-```
-
-- modify the users/views.py file
-```
-from django.shortcuts import render, redirect
-from django.contrib import messages
-from .forms import UserRegisterForm
-
-def register(request):
-    if request.method == 'POST':
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data.get('username')
-            messages.success(request, f'Account created for {username}!')
-            return redirect('blog-home')
-    else:
-        form = UserRegisterForm()
-    return render(request, 'users/register.html', {'form': form})
-```
-
-- Just to get a better template/users/register apresentation by crispy forms
-    - (django_project) django_project $ pipenv install django-crispy-forms
-
-- in the setting.py file inserted it into INSTALLED_APPS
-    - 'crispy_forms',
-    - CRISPY_TEMPLATE_PACK = 'bootstrap4' <- insert it in the end of setting.py file
-
-- in the file register.html insert
-    - {% load crispy_forms_tags %}
-    - {{ form|crispy }}
-
 <h2> Web App Part 6 - User Registration </h2>
 <h3>Create a user registration page- to loging account</h3>
 <h3>learning how we can use Form - to create user </h3 >
@@ -1028,4 +871,86 @@ def save_profile(sender, instance, **kwargs):
     def ready(self):
         import users.signals
 ```
-                                                                                  >
+
+<h2> Web App Part 9 -  Update User Profile  </h2> 
+<h3> We are going to FINISH THE USER profile page and upload the profIle picture for our users</h3 >
+
+- file users/forms.py -> we rae going to create a Model form 
+```
+from .models import Profile
+
+class UserUpdateForm(forms.ModelForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'email']
+
+class ProfileUpdateForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ['image']
+```
+
+- in the view.py 
+```
+from .forms import UserRegisterForm. UserUpdateForm, ProfileUpdateForm
+@login_required
+def profile(request):
+    u_form = UserUpdateForm()
+    p_form = ProfileUpdateForm()
+
+    context = { 
+        'u_form': u_form,
+        'p_form': p_form
+    }
+    return render(request, 'users/profile.html', context)
+```
+
+- in the file users/templates/users/profile.html
+```
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">Profile Info</legend>
+                {{ u_form|crispy }}
+                {{ p_form|crispy }}
+            </fieldset>
+            <div class="form-group">
+                <button class="btn btn-outline-info" type="submit">Update</button>
+            </div>
+        </form>
+```
+
+- route correctly in the file users/views.py
+```
+@login_required
+def profile(request):
+    if request.method == 'POST':
+        u_form = UserUpdateForm(request.POST, instance=request.user)
+        p_form = ProfileUpdateForm(request.POST,
+                                   request.FILES,
+                                   instance=request.profile)
+        if form.is_valid(): and p_form.is_valid():
+            u_form.save()
+            p_form.save()
+    else:
+        u_form = UserUpdateForm(instance=request.user)
+        p_form = ProfileUpdateForm(instance=request.profile)
+
+```
+
+- Automatically resize images when we upload them. But the largest image
+  in this site right now and the CSS is set to like 125 pixels
+  import the PILLOW Library
+
+- in users/models.py
+```
+    def save(self):
+        super().save()
+        img = Image.open(self.image.path)
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
+```

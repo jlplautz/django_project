@@ -10,7 +10,8 @@
                     {#            <small class="text-muted">{{ post.date_posed }}</small>  # May 8, 2020, 9:07 p.m.#}
                     {#            <small class="text-muted">{{ post.date_posed }}</small>  # May 08, 2020#}
                 </div>
-                <h2><a class="article-title" href="#">{{ post.title }}</a></h2>
+                {#  to link to individual post => href="{% url 'post-detail' post.id %}" #}
+                <h2><a class="article-title" href="{% url 'post-detail' post.id %}">{{ post.title }}</a></h2>
                 <p class="article-content">{{ post.content }}</p>
             </div>
         </article>

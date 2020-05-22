@@ -433,6 +433,7 @@ Running migrations:
     - Post.objects.all()
         - <QuerySet [<Post: Blog 1>, <Post: Blog 2>, <Post: Blog 3>]>
 
+
 <h2> Web App Part 5 - Database and Migrations </h2> 
 
 <h3>Delete de dummy data from blog/views.py</h3 >
@@ -445,6 +446,7 @@ Running migrations:
     - <small class="text-muted">{{ post.date_posed | date:"F d, Y" }}</small>
     
 <h5>To access the new database table from django-admin</h5>
+
 - insert into file blog/admin.py 
 ```
 from django.contrib import admin
@@ -452,6 +454,8 @@ from .models import Post
 
 admin.site.register(Post)
 ```
+
+
 <h2> Web App Part 6 - User Registration </h2>
 <h3>Create a user registration page- to loging account</h3>
 <h3>learning how we can use Form - to create user </h3 >
@@ -954,3 +958,8 @@ def profile(request):
             img.thumbnail(output_size)
             img.save(self.image.path)
 ```
+
+<h2> Web App Part 10 - Create, Update, and Delete Posts  </h2> 
+<h3> We are going to study - Class-Based Views</h3 >
+
+- the most important change ocurred in the views module and in the templates too.

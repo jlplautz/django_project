@@ -962,4 +962,4 @@ def profile(request):
 <h2> Web App Part 10 - Create, Update, and Delete Posts  </h2> 
 <h3> We are going to study - Class-Based Views</h3 >
 
-- the most important change ocurred in the views module and in the templates too.
+- the most important change occurred in the views module and in the templates too.

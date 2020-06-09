@@ -16,7 +16,3 @@ class Post(models.Model):
     # After we create a post, this absolute_url is going to link to post-detail page
     def get_absolute_url(self):
         return reverse('post-detail', kwargs={'pk': self.pk})
-
-    # After we create a post, this absolute_url is going to link to post-detail page
-    def get_absolute_url(self):
-        return reverse('post-detail', kwargs={'pk': self.pk})

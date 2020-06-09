@@ -963,3 +963,78 @@ def profile(request):
 <h3> We are going to study - Class-Based Views</h3 >
 
 - the most important change occurred in the views module and in the templates too.
+
+
+<h2> Web App Part 11 - Pagination  </h2> 
+ - Method to insert lines in the Blog_post table
+ 
+  ```
+  >>> import json
+  >>> with open('posts.json') as f:
+  ...   posts_json = json.load(f)
+  ... 
+  >>> for post in posts_json:
+  ...   post = Post(title=post['title'], content=post['content'], author_id=post['user_id'])
+  ...   post.save()
+  ```
+
+<h3> Pagination procedure example  </h3> 
+
+```
+(django_project) django_project $ mng shell
+Python 3.8.0 (default, Feb  3 2020, 16:24:25) 
+[GCC 7.4.0] on linux
+Type "help", "copyright", "credits" or "license" for more information.
+(InteractiveConsole)
+>>> from django.core.paginator import Paginator
+>>> posts = ['1', '2', '3', '4', '5']
+>>> p = Paginator(posts, 2)
+>>> p.num_pages
+3
+>>> for page in p.page_range:
+...   print(page)
+... 
+1
+2
+3
+>>> p1 = p.page(1)
+>>> p1
+<Page 1 of 3>
+>>> p1.number
+1
+>>> p1.object_list
+['1', '2']
+>>> p1.has_previous()
+False
+>>> p1.has_next()
+True
+>>> p1.next_page_number()
+2
+```  
+
+- <h2>To access some page</h2>
+  - http://localhost:8000/?page=1
+  
+- <h2>Code inserted into blog/home.html</h2>
+```
+    {% if is_paginated %}
+        {% if page_obj.has_previous %}
+            <a class="btn btn-outline-info mb-4" href="?page=1">First</a>
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <a class="btn btn-info mb-4" href="?page={{ num }}">{{ num }}</a>
+             {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <a class="btn btn-outline-info mb-4" href="?page={{ num }}">{{ num }}</a>
+            {% endif %}
+        {% endfor %}
+
+        {% if page_obj.has_next %}
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.next_page_number }}">Next</a>
+            <a class="btn btn-outline-info mb-4" href="?page={{ page_obj.paginator.num_pages }}">Last</a>
+        {% endif %}
+    {% endif %}
+{% endblock content %}
+```

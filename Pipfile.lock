@@ -24,12 +24,8 @@
             "version": "==3.3.4"
         },
         "django": {
-            "hashes": [
-                "sha256:9bc7aa619ed878fedba62ce139abe663a147dccfd20e907725ec11e02a1ca225",
-                "sha256:d58d8394036db75a81896037d757357e79406e8f68816c3e8a28721c1d9d4c11"
-            ],
-            "index": "pypi",
-            "version": "==3.0.14"
+            "hashes": [],
+            "version": "==4.1.7"
         },
         "django-crispy-forms": {
             "hashes": [
